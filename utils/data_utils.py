@@ -30,7 +30,6 @@ def dump_data(obj, wfpath, wfname):
         pickle.dump(obj, wf)
 
 
-
 def load_data(rfpath, rfname):
     with open(os.path.join(rfpath, rfname), 'rb') as rf:
         return pickle.load(rf)
