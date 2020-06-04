@@ -61,5 +61,5 @@ def get_embedding(texts):
 
     # ——————提取文本特征——————
     text_hashCodes = textNet(tokens_tensor, segments_tensors, input_masks_tensors)  # text_hashCodes是一个32-dim文本特征
-    print(text_hashCodes)
+    #print(text_hashCodes)
     return text_hashCodes
