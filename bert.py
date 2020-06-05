@@ -37,13 +37,31 @@ def get_embedding(texts, textNet):
     # texts = ["Henson is a pig",
     # "[CLS] Jim [SEP]"]
     tokens, segments, input_masks = [], [], []
+    text_index=[0]
+    tindex = 0
     for text in texts:
-        text = '[CLS]' + text + '[SEP]'
-        tokenized_text = tokenizer.tokenize(text)  # 用tokenizer对句子分词
-        indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)  # 索引列表
-        tokens.append(indexed_tokens)
-        segments.append([0] * len(indexed_tokens))
-        input_masks.append([1] * len(indexed_tokens))
+        def partition(text,textlist): # 对超过长度的字符串分割
+            lentext = len(text)
+            if lentext<2000:
+                textlist.append(text)
+            else:
+                left = text[0:len(text)//2]
+                right = text[len(text)//2:]
+                partition(left, textlist)
+                partition(right, textlist)
+
+        textlist =[]
+        partition(text,textlist)
+        text_index.append(text_index[tindex]+len(textlist))
+
+        for ti in textlist:
+            ti = '[CLS]' + ti + '[SEP]'
+            tokenized_text = tokenizer.tokenize(ti)  # 用tokenizer对句子分词
+            indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)  # 索引列表
+            tokens.append(indexed_tokens)
+            segments.append([0] * len(indexed_tokens))
+            input_masks.append([1] * len(indexed_tokens))
+        tindex = tindex+1
 
     max_len = max([len(single) for single in tokens])  # 最大的句子长度
 
@@ -63,8 +81,13 @@ def get_embedding(texts, textNet):
 
     # ——————提取文本特征——————
     text_hashCodes = textNet(tokens_tensor, segments_tensors, input_masks_tensors)  # text_hashCodes是一个32-dim文本特征
+    ret_hashCodes = torch.empty(len(texts), text_hashCodes.shape[1])
+    for i in range(len(texts)): # 对被分割的句子做平均处理
+        start = text_index[i]
+        end = text_index[i+1]
+        ret_hashCodes[i,:] = torch.mean(text_hashCodes[start:end],dim=0,keepdim=True)
     # print(text_hashCodes)
-    return text_hashCodes
+    return ret_hashCodes
 
 
 # textnet = TextNet(code_length=32)

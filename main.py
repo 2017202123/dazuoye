@@ -26,8 +26,8 @@ def train():
         print(idx)
         (normal, positive, negative) = tuple(item)
         # print(list(normal))
-        if len(normal[0]) > 2000 or len(positive[0]) > 2000 or len(negative[0]) > 2000:
-            continue
+        # if len(normal[0]) > 2000 or len(positive[0]) > 2000 or len(negative[0]) > 2000:
+        #     continue
         print(len(normal[0]))
         print(len(positive[0]))
         print(len(negative[0]))
