@@ -27,16 +27,18 @@ class TextNet(nn.Module):
         # features = self.tanh(features)
         return text_embeddings
 
-def get_embedding(texts):
-    textNet = TextNet(code_length=32)
+
+def get_embedding(texts, textNet):
+    # textNet = TextNet(code_length=32)
 
     # ——————输入处理——————
     tokenizer = BertTokenizer.from_pretrained('./data/bert-base-uncased-vocab.txt')
 
     # texts = ["Henson is a pig",
-             # "[CLS] Jim [SEP]"]
+    # "[CLS] Jim [SEP]"]
     tokens, segments, input_masks = [], [], []
     for text in texts:
+        text = '[CLS]' + text + '[SEP]'
         tokenized_text = tokenizer.tokenize(text)  # 用tokenizer对句子分词
         indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)  # 索引列表
         tokens.append(indexed_tokens)
@@ -61,5 +63,9 @@ def get_embedding(texts):
 
     # ——————提取文本特征——————
     text_hashCodes = textNet(tokens_tensor, segments_tensors, input_masks_tensors)  # text_hashCodes是一个32-dim文本特征
-    #print(text_hashCodes)
+    # print(text_hashCodes)
     return text_hashCodes
+
+
+# textnet = TextNet(code_length=32)
+# get_embedding(texts=[''])
