@@ -9,9 +9,11 @@ BATCH_SIZE = 1
 WEIGHT_DECAY = 0.1
 LR = 1e-3
 
-def train():
 
+def train():
     model = bert.TextNet(code_length=32)
+    if torch.cuda.is_available():
+        model = model.cuda()
     dataset = triplet_dataset.TripletDataset(dtype='train')
     data = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -24,22 +26,21 @@ def train():
     for idx, item in enumerate(data):
         # print(len(item[0]))
         print(idx)
+        optimizer.zero_grad()
+
         (normal, positive, negative) = tuple(item)
-        # print(list(normal))
-        # if len(normal[0]) > 2000 or len(positive[0]) > 2000 or len(negative[0]) > 2000:
-        #     continue
-        print(len(normal[0]))
-        print(len(positive[0]))
-        print(len(negative[0]))
-        item_embedding = bert.get_embedding(list(normal), textNet=model)
-        positive_embedding = bert.get_embedding(list(positive), textNet=model)
-        negative_embedding = bert.get_embedding(list(negative), textNet=model)
 
 
+        item_embedding = bert.get_embedding(list(normal), textNet=model).cuda()
+        positive_embedding = bert.get_embedding(list(positive), textNet=model).cuda()
+        negative_embedding = bert.get_embedding(list(negative), textNet=model).cuda()
 
-        if idx > 32:
-            break
+        output = loss(item_embedding, positive_embedding, negative_embedding)
+        output.backward()
+        optimizer.step()
 
+        if idx % 10 == 0:
+            print(idx, output)
 
 
 if __name__ == '__main__':
