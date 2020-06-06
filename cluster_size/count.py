@@ -155,7 +155,6 @@ def run_training(mink = 1,maxk = 500,WORD_EMBEDDING_DIM=10, LSTM_HIDDEN_DIM=64,e
 
 
 def gen_K(test_file,WORD_EMBEDDING_DIM=10, LSTM_HIDDEN_DIM=64,):
-    #用于测试，或者说古诗生成
     # poems_vector, word_int_map, int_word_map = process_poems('./subset_poems.txt')
     # word_embedding = rnn.word_embedding(vocab_length=len(word_int_map) , embedding_dim=WORD_EMBEDDING_DIM)
     rnn_model = RNN_model(embedding_dim=WORD_EMBEDDING_DIM,
