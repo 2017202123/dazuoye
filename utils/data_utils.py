@@ -6,6 +6,7 @@ import os
 import numpy.random as random
 import math
 import utils.string_utils as string_utils
+import numpy as np
 
 '''pub中的格式'''
 # ''' "id":"","title":"","abstract":"","keywords": ["",""],
@@ -96,18 +97,14 @@ def divide_data(author_dict): # 划分数据集
 
 if __name__ == '__main__':
     # 数据预处理+划分数据集
-    # author_new,pub_new = pre_data(author_dict=load_json(rfdir='../data/', rfname='train_author.json'),
-    #                               pub_dict=load_json(rfdir='../data/', rfname='train_pub.json'))
-    #                             #train_author_new.json和train_pub_new.json是处理后的数据集
-    #
-    # divide_data(author_new) # 划分数据集：train_set_author.json和test_set_author.json分别是训练和测试数据集
+    author_new,pub_new = pre_data(author_dict=load_json(rfdir='../data/', rfname='train_author.json'),
+                                  pub_dict=load_json(rfdir='../data/', rfname='train_pub.json'))
+                                #train_author_new.json和train_pub_new.json是处理后的数据集
 
-    dic = load_json(rfdir='../data/', rfname='train_author.json')
-    for d in dic:
-        k = 0
-        for ki in dic[d]:
-            k = k+1
-        print(k)
+    divide_data(author_new) # 划分数据集：train_set_author.json和test_set_author.json分别是训练和测试数据集
+
+
+
 
 
 # class Singleton:

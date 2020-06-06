@@ -5,15 +5,15 @@ import triplet_dataset
 import bert
 from torch.utils.data import DataLoader, Dataset
 
-BATCH_SIZE = 1
+BATCH_SIZE = 10
 WEIGHT_DECAY = 0.1
 LR = 1e-3
 
 
 def train():
     model = bert.TextNet(code_length=32)
-    if torch.cuda.is_available():
-        model = model.cuda()
+    # if torch.cuda.is_available():
+    #     model = model.cuda()
     dataset = triplet_dataset.TripletDataset(dtype='train')
     data = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -31,9 +31,9 @@ def train():
         (normal, positive, negative) = tuple(item)
 
 
-        item_embedding = bert.get_embedding(list(normal), textNet=model).cuda()
-        positive_embedding = bert.get_embedding(list(positive), textNet=model).cuda()
-        negative_embedding = bert.get_embedding(list(negative), textNet=model).cuda()
+        item_embedding = bert.get_embedding(list(normal), textNet=model)#.cuda()
+        positive_embedding = bert.get_embedding(list(positive), textNet=model)#.cuda()
+        negative_embedding = bert.get_embedding(list(negative), textNet=model)#.cuda()
 
         output = loss(item_embedding, positive_embedding, negative_embedding)
         output.backward()
